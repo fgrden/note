@@ -4,10 +4,10 @@ function appStart() {
     document.querySelector("#send")
             .addEventListener("click", makeNewNote)
     const notesArrFromStorage = JSON.parse(localStorage.getItem("notesArr"));
-    console.log(notesArrFromStorage);
+    console.log(notesArrFromStorage)
     if(notesArrFromStorage) {
         notesArrFromStorage.forEach(item => {
-            new Note(item.title, item.content, item.bg, item.pinned, )
+            new Note(item.title, item.content, item.bg, item.pinned, false, item.date)
         })
     }
 }

@@ -1,11 +1,11 @@
 
 
 class Note  {
-    constructor(title = "", content = "", bg = "white", pinned = false, setToStorage = false) {
+    constructor(title = "", content = "", bg = "white", pinned = false, setToStorage = false, date = false) {
         this.title = title;
         this.content = content;
         this.bg = bg;
-        this.createdDate = new Date().toISOString();
+        this.createdDate = date ? date : new Date().toISOString();
         this.pinned = pinned;
         this.notesArr = [];
         this.noteObj = {
@@ -18,9 +18,11 @@ class Note  {
         this.noteDate = this.makeNoteDate();
         this.titleHeader = this.makeNoteTitle();
         this.contentParagraph = this.makeNoteContent();
+        this.deleteBtn = this.makeDeleteBtn();
         this.noteContainer  = this.makeNoteContainer();
         this.appendNoteContainer(this.pinned);
         setToStorage ? this.setNoteToLocalStorage() : "";
+        this.deleteBtn.addEventListener("click", this.removeNote);
     }
 
     makeNoteTitle() {
@@ -38,12 +40,19 @@ class Note  {
         noteDate.innerHTML = this.createdDate;
         return noteDate
     }
+    makeDeleteBtn() {
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = "DELETE";
+        deleteBtn.classList.add("deleteBtn");
+        return deleteBtn;
+    }
     makeNoteContainer() {
         const noteContainer = document.createElement("div");
         noteContainer.style.backgroundColor = this.bg
         noteContainer.appendChild(this.noteDate)
         noteContainer.appendChild(this.titleHeader);
         noteContainer.appendChild(this.contentParagraph);
+        noteContainer.appendChild(this.deleteBtn);
         return noteContainer;
     }
     appendNoteContainer(pinned) {
@@ -61,11 +70,19 @@ class Note  {
         notesArrFromStorage.push(this.noteObj);
         localStorage.setItem("notesArr", JSON.stringify(notesArrFromStorage))
     }
+    removeNote() {
+        this.parentElement.remove();
+        const notesArrFromStorage = JSON.parse(localStorage.getItem("notesArr"));
+        notesArrFromStorage.forEach((item, index) => {
+            console.log(this.parentElement.firstChild.innerHTML)
+            console.log(item.date)
+            console.log(this.parentElement.firstChild.innerHTML == item.date)
+            if(item.date == this.parentElement.firstChild.innerHTML) {
+                const newNotesArr = notesArrFromStorage.filter(el => el != item)
+                localStorage.setItem("notesArr", JSON.stringify(newNotesArr));
+            }
+        })
+    }
 }
-
-// zapisanie do local Storage
-
-
-// odczyt z local storage 
 
 
